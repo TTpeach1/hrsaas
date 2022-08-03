@@ -12,6 +12,8 @@ router.beforeEach((to, from, next) => {
   //1.登录
   if (token) {
     // 是否进入登录页
+    store.dispatch('user/getUserInfo')
+    //进去当前页面立即获取数据
     if (to.path === '/login') {
       // 1.1 是跳到首页
       next('/')

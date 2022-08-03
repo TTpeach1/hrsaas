@@ -15,6 +15,13 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+//图片加载失败
+import * as directives from '@/directives'
+
+for( let key in directives){
+  Vue.directive(key, directives[key])
+}
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -34,6 +41,17 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+
+//参数1：自定义指令的名字：不需要+v-
+//参数2：是配置对象
+// Vue.directive('imgError',{
+//   inserted:function(el,{value}){
+//     //聚焦元素
+//     el.onerror=function(){
+//       el.src=value;
+//     }
+//   },
+// })
 
 new Vue({
   el: '#app',
