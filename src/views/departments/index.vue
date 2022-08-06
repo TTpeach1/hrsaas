@@ -1,20 +1,31 @@
 <template>
-  <div class="dashboard-container">
+  <div class="dashboard-container" v-loading="loading">
     <div class="app-container">
       <el-card class="box-card">
         <div class="text item">
-          <TreeTools @add='add' :treeNode="company" :isRoot="true"></TreeTools>
+          <TreeTools @add="add" :treeNode="company" :isRoot="true"></TreeTools>
           <el-tree :data="treeData" :props="defaultProps" default-expand-all>
             <!-- <TreeTools :treeNode="{name:'总裁办',manager:'总裁'}"></TreeTools> -->
             <template v-slot="{ data }">
-              <TreeTools @add='add' @remove="loadDepts" :treeNode="data"> </TreeTools>
+              <TreeTools
+                @add="add"
+                @remove="loadDepts"
+                @edit="showEdit"
+                :treeNode="data"
+              >
+              </TreeTools>
             </template>
           </el-tree>
         </div>
       </el-card>
     </div>
     <!-- 添加部门信息 -->
-    <add-dept :visible.sync="dialogVisible" :currentNode='currentNode'></add-dept>
+    <add-dept
+      :visible.sync="dialogVisible"
+      :currentNode="currentNode"
+      @close="loadDepts"
+      ref="AddDept"
+    ></add-dept>
   </div>
 </template>
 
@@ -27,6 +38,7 @@ export default {
   name: 'add-depy',
   data() {
     return {
+      loading: false, // 用来控制进度弹层的显示和隐藏
       //修改默认属性名称
       defaultProps: {
         label: 'name'
@@ -38,7 +50,7 @@ export default {
       ],
       company: { name: '传智教育', manager: '负责人' },
       dialogVisible: false,
-      currentNode:{}
+      currentNode: {}
     }
   },
   components: {
@@ -52,16 +64,22 @@ export default {
 
   methods: {
     async loadDepts() {
+      this.loading = true
       const res = await getDeptsApi()
       console.log(res)
       // this.treeData = res.depts
       this.treeData = transListToTree(res.depts, '')
       console.log(this.treeData)
+      this.loading = false
     },
-    add(val){
-      this.dialogVisible=true
-      this.currentNode=val
-      console.log(val,"add点击传值");
+    add(val) {
+      this.dialogVisible = true
+      this.currentNode = val
+      console.log(val, 'add点击传值')
+    },
+    showEdit(val) {
+      this.dialogVisible = true
+      this.$refs.AddDept.getDeptById(val.id)
     }
   }
 }
