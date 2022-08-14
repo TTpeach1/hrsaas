@@ -17,9 +17,17 @@ import '@/permission' // permission control
 
 //图片加载失败
 import * as directives from '@/directives'
+import components from '@/components'
+import * as filters from '@/filters'
 
-for( let key in directives){
+for (let key in directives) {
   Vue.directive(key, directives[key])
+}
+
+Vue.use(components)
+
+for (let key in filters){
+  Vue.directive(key, filters[key])
 }
 
 /**
@@ -57,5 +65,5 @@ new Vue({
   el: '#app',
   router,
   store,
-  render: h => h(App)
+  render: (h) => h(App)
 })

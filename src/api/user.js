@@ -37,3 +37,14 @@ export const getUserDetailApi = (id) => {
     url: '/sys/user/' + id
   })
 }
+/**
+ * 删除员工接口
+ * @param {*} id 
+ * @returns 
+ */
+ export function delEmployeeApi(id) {
+  return request({
+    url: `/sys/user/${id}`,
+    method: 'delete'
+  })
+}

@@ -53,5 +53,14 @@ export const changeDeptsApi=(data)=>{
     data
   })
 }
-
+/**
+ * 部门列表
+ * @returns 
+ */
+export const getDepartmentsApi =()=>{
+    return request({
+      url:'/company/department',
+      method: 'GET',
+    })
+}
 

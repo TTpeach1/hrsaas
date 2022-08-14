@@ -42,7 +42,10 @@
               <el-input v-model="companyInfo.name" disabled></el-input>
             </el-form-item>
             <el-form-item label="公司地址">
-              <el-input v-model="companyInfo.companyAddress" disabled></el-input>
+              <el-input
+                v-model="companyInfo.companyAddress"
+                disabled
+              ></el-input>
             </el-form-item>
             <el-form-item label="公司邮箱">
               <el-input v-model="companyInfo.mailbox" disabled></el-input>
