@@ -48,3 +48,15 @@ export const getUserDetailApi = (id) => {
     method: 'delete'
   })
 }
+/**
+ * 保存员工信息
+ * @param {*} data 
+ * @returns 
+ */
+export function saveUserDetailByIdApi(data){
+  return request({
+    url: `/sys/user/${data.id}`,
+    method: 'put',
+    data
+  })
+}
