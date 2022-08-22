@@ -12,7 +12,14 @@ router.beforeEach(async(to, from, next) => {
   //1.登录
   if (token) {
     // 是否进入登录页
-    await store.dispatch('user/getUserInfo')
+    if(!store.state.user.userInfo.userId){
+      const {roles} = await store.dispatch('user/getUserInfo')
+      console.log(roles,'用户信息,menus里包含权限');
+      await store.dispatch('permission/filterRoutes',roles)
+      await store.dispatch('permission/setPointsAction',roles.points)
+      next(to.path) //动态路由进入
+    }
+    
     //进去当前页面立即获取数据
     if (to.path === '/login') {
       // 1.1 是跳到首页

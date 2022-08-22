@@ -1,5 +1,6 @@
 <template>
   <div class="user-info">
+    <i @click="$router.push(`/employees/print/${userId}?type=personal`)" class="el-icon-printer"></i>
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -58,7 +59,10 @@
         <el-col :span="12">
           <el-form-item label="员工头像">
             <!-- 放置上传图片 -->
-          <upload-img ref="heardImg" @onSuccess='heardImgSuccess'></upload-img>
+            <upload-img
+              ref="heardImg"
+              @onSuccess="heardImgSuccess"
+            ></upload-img>
           </el-form-item>
         </el-col>
       </el-row>
@@ -91,7 +95,10 @@
         <!-- 员工照片 -->
         <el-form-item label="员工照片">
           <!-- 放置上传图片 -->
-          <upload-img ref="employeesPic" @onSuccess='employeesPicSuccess'></upload-img>
+          <upload-img
+            ref="employeesPic"
+            @onSuccess="employeesPicSuccess"
+          ></upload-img>
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -471,34 +478,34 @@ export default {
     async loadUserDetail() {
       this.userInfo = await getUserDetailApi(this.userId)
       this.$refs.heardImg.fileList.push({
-        url:this.userInfo.staffPhoto
+        url: this.userInfo.staffPhoto
       })
     },
     async getPersonalDetail() {
       this.formData = await getPersonalDetailApi(this.userId) // 获取员工数据
       this.$refs.employeesPic.fileList.push({
-        url:this.formData.staffPhoto
+        url: this.formData.staffPhoto
       })
     },
     async onSaveUser() {
-      if(this.$refs.heardImg.loading){
+      if (this.$refs.heardImg.loading) {
         return this.$message.error('头像正在上传中')
       }
       await saveUserDetailByIdApi(this.userInfo)
       this.$message.success('更新成功')
     },
     async onSaveEmployees() {
-      if(this.$refs.employeesPic.loading){
+      if (this.$refs.employeesPic.loading) {
         return this.$message.error('头像正在上传中')
       }
       await updatePersonal(this.formData)
       this.$message.success('更新成功')
     },
-    heardImgSuccess({url}){
-      this.userInfo.staffPhoto=url
+    heardImgSuccess({ url }) {
+      this.userInfo.staffPhoto = url
     },
-    employeesPicSuccess({url}){
-      this.formData.staffPhoto=url
+    employeesPicSuccess({ url }) {
+      this.formData.staffPhoto = url
     }
   }
 }

@@ -4,7 +4,12 @@
       <page-tools>
         <span slot="left-tag">共166条记录</span>
         <template slot="right">
-          <el-button size="small" type="warning" @click="$router.push('import')"
+          <el-button
+            size="small"
+            type="warning"
+            @click="$router.push('import')"
+            v-isHas="point.employees.import"
+          
             >导入</el-button
           >
           <el-button size="small" type="danger" @click="exportEmployees"
@@ -14,6 +19,7 @@
             size="small"
             type="primary"
             @click="showAddEmployees = true"
+            v-if="isHas('point.employees.add')"
             >新增员工</el-button
           >
         </template>
@@ -34,6 +40,7 @@
                   height: 100px;
                   padding: 10px;
                 "
+                @click="showErCodeDialog(row.staffPhoto)"
               />
             </template>
           </el-table-column>
@@ -58,15 +65,23 @@
           </el-table-column>
           <el-table-column label="操作" sortable="" fixed="right" width="280">
             <template slot-scope="{ row }">
-              <el-button type="text" size="small" @click="$router.push('/employees/detail/'+row.id)">查看</el-button>
+              <el-button
+                type="text"
+                size="small"
+                @click="$router.push('/employees/detail/' + row.id)"
+                >查看</el-button
+              >
               <el-button type="text" size="small">转正</el-button>
               <el-button type="text" size="small">调岗</el-button>
               <el-button type="text" size="small">离职</el-button>
-              <el-button type="text" size="small">角色</el-button>
+              <el-button type="text" size="small" @click="assigRole(row.id)"
+                >角色</el-button
+              >
               <el-button
                 type="text"
                 size="small"
                 @click="deleteEmployee(row.id)"
+                v-if="isHas('point.employees.del')"
                 >删除</el-button
               >
             </template>
@@ -90,15 +105,28 @@
       </el-card>
     </div>
     <AddEmployees :visible.sync="showAddEmployees"></AddEmployees>
+    <el-dialog title="二维码" :visible.sync="ercodeDialog">
+      <el-row type="flex" justify="center">
+        <canvas id="canvas" />
+      </el-row>
+    </el-dialog>
+    <assign-role
+      :visible.sync="showAssigRole"
+      :employeesId="employeesId"
+    ></assign-role>
   </div>
 </template>
 
 <script>
 import { getEmployessInfoApi, delEmployeeApi } from '@/api/employees'
 import AddEmployees from './components/add-employees.vue'
+import AssignRole from './components/assign-role.vue'
 import employees from '@/constant/employees'
-const { exportExcelMapPath,hireType } = employees
+import QRcode from 'qrcode'
+import MixinPermission from '@/mixins/permission'
+const { exportExcelMapPath, hireType } = employees
 export default {
+  mixins: [MixinPermission],
   data() {
     return {
       employees: [],
@@ -106,10 +134,13 @@ export default {
         page: 1,
         size: 10
       },
-      showAddEmployees: false
+      showAddEmployees: false,
+      ercodeDialog: false,
+      showAssigRole: false,
+      employeesId: ''
     }
   },
-  components: { AddEmployees },
+  components: { AddEmployees, AssignRole },
   created() {
     this.getEmployessInfo()
   },
@@ -156,17 +187,16 @@ export default {
       const header = Object.keys(exportExcelMapPath) //返回数组
       const data = rows.map((item) => {
         return header.map((h) => {
-          if(h==='聘用形式'){
-            const findItem = hireType.find((hire)=>{
-              return hire.id===item[exportExcelMapPath[h]]
+          if (h === '聘用形式') {
+            const findItem = hireType.find((hire) => {
+              return hire.id === item[exportExcelMapPath[h]]
             })
-            return findItem?findItem.value:'未知'
-          }else{
+            return findItem ? findItem.value : '未知'
+          } else {
             return item[exportExcelMapPath[h]]
           }
         })
       })
-
       export_json_to_excel({
         header: header, //表头 必填
         data: data, //具体数据 必填
@@ -174,6 +204,18 @@ export default {
         autoWidth: true, //非必填
         bookType: 'xlsx' //非必填
       })
+    },
+    showErCodeDialog(staffPhoto) {
+      if (!staffPhoto) return this.$message.error('该用户还未设置')
+      this.ercodeDialog = true
+      this.$nextTick(() => {
+        const canvas = document.getElementById('canvas')
+        QRcode.toCanvas(canvas, staffPhoto)
+      })
+    },
+    assigRole(id) {
+      this.showAssigRole = true
+      this.employeesId = id
     }
   }
 }

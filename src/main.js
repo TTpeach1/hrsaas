@@ -19,16 +19,18 @@ import '@/permission' // permission control
 import * as directives from '@/directives'
 import components from '@/components'
 import * as filters from '@/filters'
+import Print from 'vue-print-nb'
 
 for (let key in directives) {
   Vue.directive(key, directives[key])
 }
-
-Vue.use(components)
-
 for (let key in filters){
   Vue.directive(key, filters[key])
 }
+
+Vue.use(components)
+Vue.use(Print)
+
 
 /**
  * If you don't want to use mock-server

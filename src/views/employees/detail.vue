@@ -5,7 +5,7 @@
         <div class="app-container">
           <el-card>
             <el-tabs v-model="activeName" @tab-click="handleClick">
-              <el-tab-pane label="登录账户设置" name='account'>
+              <el-tab-pane label="登录账户设置" name="account">
                 <!-- 放置表单 -->
                 <el-form
                   label-width="120px"
@@ -29,10 +29,12 @@
                   </el-form-item>
                 </el-form>
               </el-tab-pane>
-              <el-tab-pane label="个人详情" name='user' >
+              <el-tab-pane label="个人详情" name="user">
                 <user-info></user-info>
               </el-tab-pane>
-              <el-tab-pane label="岗位信息" name='job' />
+              <el-tab-pane label="岗位信息" name="job">
+                <job-info></job-info>
+              </el-tab-pane>
             </el-tabs>
           </el-card>
         </div>
@@ -42,17 +44,18 @@
 </template>
 
 <script>
-import { getUserDetailApi,saveUserDetailByIdApi } from '@/api/user'
-import userInfo from '@/views/employees/components/user-info.vue' 
+import { getUserDetailApi, saveUserDetailByIdApi } from '@/api/user'
+import userInfo from '@/views/employees/components/user-info.vue'
+import jobInfo from '@/views/employees/components/job-info.vue'
 import Cookies from 'js-cookie'
 export default {
   data() {
     return {
       formData: {},
-      activeName:Cookies.get('employeeDetailTab')||'account'
+      activeName: Cookies.get('employeeDetailTab') || 'account'
     }
   },
-  components:{userInfo},
+  components: { userInfo, jobInfo },
   created() {
     this.getUserDetail()
   },
@@ -63,18 +66,16 @@ export default {
       this.formData = res
       console.log(res)
     },
-    async onSave(){
-        await saveUserDetailByIdApi(this.formData)
-        this.$message.success('修改成功')
+    async onSave() {
+      await saveUserDetailByIdApi(this.formData)
+      this.$message.success('修改成功')
     },
-    handleClick(){
-        Cookies.set('employeeDetailTab',this.activeName)
+    handleClick() {
+      Cookies.set('employeeDetailTab', this.activeName)
     }
   },
 
-  computed: {
-
-  }
+  computed: {}
 }
 </script>
 

@@ -16,7 +16,12 @@ export const imgError = {
     }
   }
 }
-
-export const aa = {
-  inserted() {}
+import store from '@/store'
+export const isHas = {
+  inserted(el,binding) {
+    const has = store.state.permission.points.includes(binding.value)
+    if(!has){
+      el.remove()
+    }
+  }
 }

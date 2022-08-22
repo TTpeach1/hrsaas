@@ -72,3 +72,13 @@ export function importEmployeesApi(data){
     data,
   })
 }
+/** *
+ * 给用户分配角色
+ * ***/
+ export function assignRolesApi(data) {
+  return request({
+    url: '/sys/user/assignRoles',
+    data,
+    method: 'put'
+  })
+}
