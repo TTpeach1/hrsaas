@@ -7,7 +7,6 @@
           <slot name="left-tag" />
         </el-tag>
       </el-col>
-
       <el-col>
         <el-row type="flex" justify="end">
           <slot name="right" />
@@ -23,20 +22,26 @@ export default {
   data() {
     return {}
   },
+
   props: {
     leftIcon: {
       type: String,
-      default: 'el-icon-info'
+      default: 'el-icon-info',
     },
     isShowLeft: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
+
   created() {},
 
-  methods: {}
+  methods: {},
 }
 </script>
 
-<style lang="less" scoped></style>
+<style scoped lang="scss">
+.box-card {
+  margin: 10px 0;
+}
+</style>

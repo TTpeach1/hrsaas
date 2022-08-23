@@ -1,12 +1,15 @@
 <template>
   <div id="app">
-    <!-- 一级路由 -->
+    <!-- 一级路由占位 -->
     <router-view />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  data() {
+    return {}
+  },
 }
 </script>

@@ -1,32 +1,36 @@
-import router,{ asyncRouters, constantRoutes } from '@/router'
+import router, { constantRoutes, asyncRoutes } from '@/router'
 export default {
   namespaced: true,
   state: {
-    routes: [] ,//我们自己维护的路由规则，因为菜单渲染不了$router.options.routes里面只能拿到静态路由，动态路由需要自己加
-    points:[]
+    routes: [], // 我们自己维护的路由规则,所有路由规则(静态路由 + 筛选后的动态路由)
+    points: [], // 按钮权限
   },
   mutations: {
-    setRouters(state, routes) {
-      state.routes = { ...constantRoutes, ...routes }
+    setRoutes(state, routes) {
+      state.routes = [...constantRoutes, ...routes]
     },
-    setpoints(state, payload) {
+    setPoints(state, payload) {
       state.points = payload
-    }
+    },
   },
   actions: {
     filterRoutes(context, roles) {
-      const routes = asyncRouters.filter((item) => {
+      // console.log(asyncRoutes)
+      const routes = asyncRoutes.filter((item) => {
+        // 如果权限标识在roles.menus, 有这个权限 返回true
+        // 如果权限标识不在roles.menus, 没有这个权限 返回false
         return roles.menus.includes(item.meta.id)
       })
-      console.log(routes)
-      context.commit('setRouters', routes)
+      context.commit('setRoutes', routes)
+      // 怎么动态添加路由规则?
+      // console.log(routes)
       router.addRoutes([
         ...routes,
-        { path: '*', redirect: '/404', hidden: true }
+        { path: '*', redirect: '/404', hidden: true },
       ])
     },
-    setPointsAction(context, points){
-      context.commit('setpoints', points)
-    }
-  }
+    setPointsAction(context, points) {
+      context.commit('setPoints', points)
+    },
+  },
 }

@@ -1,42 +1,39 @@
 <template>
   <div class="dashboard-container">
     <div class="app-container">
-      <PageTools :isShowLeft="false">
-        <template #right>
-          <el-button type="primary" @click="showAddDialog('0', 1)"
-            >添加权限</el-button
-          >
+      <page-tools :isShowLeft="false">
+        <template slot="right">
+          <el-button @click="showAddDialog('0', 1)">添加权限</el-button>
         </template>
-      </PageTools>
-      <!-- 表格 -->
+      </page-tools>
+
       <el-table
-        :data="permission"
-        slot="right"
-        style="width: 100%"
-        class="table-per"
-        row-key="id"
         ref="table"
+        row-key="id"
+        :data="permissions"
+        style="width: 100%"
       >
-        <el-table-column label="名称">
-          <template slot-scope="{ row }">
+        <el-table-column label="名称" width="180">
+          <template v-slot="{ row }">
             <i
               v-if="row.children"
               style="margin-right: 5px"
               class="el-icon-folder-opened"
               @click="expend(row)"
             ></i>
-            <i
+            <!-- <i
               v-if="row.type === 2"
+              class="el-icon-folder"
               style="margin-right: 5px"
-              class="el-icon-folder-opened"
-            ></i>
+            ></i> -->
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="code" label="标识"> </el-table-column>
+        <el-table-column prop="code" label="标识" width="180">
+        </el-table-column>
         <el-table-column prop="description" label="描述"> </el-table-column>
-        <el-table-column prop="address" label="操作">
-          <template slot-scope="{ row }">
+        <el-table-column label="操作">
+          <template v-slot="{ row }">
             <el-button type="text" @click="showAddDialog(row.id, 2)"
               >添加</el-button
             >
@@ -46,6 +43,7 @@
         </el-table-column>
       </el-table>
     </div>
+
     <!-- 放置一个弹层 用来编辑新增节点 -->
     <el-dialog title="添加权限点" :visible.sync="showDialog">
       <!-- 表单 -->
@@ -72,7 +70,7 @@
           <el-button size="small" type="primary" @click="onSave"
             >确定</el-button
           >
-          <el-button size="small" @click="onClose">取消</el-button>
+          <el-button size="small">取消</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -80,40 +78,43 @@
 </template>
 
 <script>
-import { getPermissionListApi, addPermission } from '@/api/permission'
+import { getPermissionList, addPermission } from '@/api/permission'
 import { transListToTree } from '@/utils'
 export default {
   data() {
     return {
-      permission: [],
-      showDialog: false,
+      permissions: [],
       formData: {
         name: '', // 名称
         code: '', // 标识
         description: '', // 描述
         type: '', // 类型 该类型 不需要显示 因为点击添加的时候已经知道类型了
         pid: '', // 因为做的是树 需要知道添加到哪个节点下了
-        enVisible: '0' // 开启
+        enVisible: '0', // 开启
       },
       rules: {
         name: [
-          { required: true, message: '权限名称不能为空', trigger: 'blur' }
+          { required: true, message: '权限名称不能为空', trigger: 'blur' },
         ],
-        code: [{ required: true, message: '权限标识不能为空', trigger: 'blur' }]
-      }
+        code: [
+          { required: true, message: '权限标识不能为空', trigger: 'blur' },
+        ],
+      },
+      showDialog: false,
     }
   },
 
   created() {
-    this.getPermissionList()
+    this.getPermissions()
   },
 
   methods: {
-    async getPermissionList() {
-      const res = await getPermissionListApi()
-      this.permission = transListToTree(res, '0')
+    async getPermissions() {
+      const res = await getPermissionList()
+      this.permissions = transListToTree(res, '0')
     },
     expend(row) {
+      // console.log('点击展开', row)
       row.isExpand = !row.isExpand
       this.$refs.table.toggleRowExpansion(row, row.isExpand)
     },
@@ -122,26 +123,20 @@ export default {
       this.formData.pid = id
       this.formData.type = type
     },
-    async onSave() {
+    onSave() {
       this.$refs.form.validate(async (valid) => {
         if (!valid) return
         await addPermission(this.formData)
-        this.$message.success('新增成功')
-        this.onClose()
-        this.getPermissionList()
+        this.$message.success('添加成功')
+        this.showDialog = false
+        this.getPermissions()
       })
     },
-    onClose() {
-      this.showDialog = false
-    }
-  }
+  },
 }
 </script>
 
 <style scoped lang="scss">
-.table-per {
-  margin-top: 20px;
-}
 ::v-deep .el-table [class*='el-table__row--level'] .el-table__expand-icon {
   display: none;
 }

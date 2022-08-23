@@ -1,66 +1,64 @@
 import request from '@/utils/request'
+
 /**
- * 获取组织架构数据
- * @returns 
+ * 获取组织架构的数据
+ * @returns promise
  */
-export const getDeptsApi = () => {
+export function getDeptsApi() {
   return request({
-    url: '/company/department'
+    url: '/company/department',
   })
 }
 
-
-/** *
- *  根据id根据部门  接口是根据restful的规则设计的   删除 delete  新增 post  修改put 获取 get
- * **/
- export function delDeptsApi(id) {
+/**
+ * 删除部门
+ * @param {*} id 要删除的部门id
+ * @returns promise
+ */
+export function delDeptsApi(id) {
   return request({
-    url: `/company/department/${id}`,
-    method: 'delete'
+    url: '/company/department/' + id,
+    method: 'DELETE',
   })
 }
+
 /**
  * 新增部门
- * @returns 
+ * @param {Object} data
+ * code 部门编码，同级部门不可重复
+ * introduce 介绍
+ * manager 负责人名称
+ * name	部门名称
+ * pid	父级部门ID
+ * @returns promise
  */
-export const addDeptsApi=(data)=>{
+export function addDeptApi(data) {
   return request({
-    url:'/company/department',
+    url: '/company/department',
     method: 'POST',
-    data
+    data,
   })
-}
-/**
- * 根据id查询部门
- * @param {*} id 
- * @returns 
- */
-export const getNewDeptsApi=(id)=>{
-  return request({
-    url:`/company/department/${id}`,
-    method: 'GET',
-  })
-}
-/**
- * 修改部门
- * @param {*} id 
- * @returns 
- */
-export const changeDeptsApi=(data)=>{
-  return request({
-    url:`/company/department/${data.id}`,
-    method: 'PUT',
-    data
-  })
-}
-/**
- * 部门列表
- * @returns 
- */
-export const getDepartmentsApi =()=>{
-    return request({
-      url:'/company/department',
-      method: 'GET',
-    })
 }
 
+/**
+ * 根据id获取部门详情
+ * @param {String} id 部门id
+ * @returns Promise
+ */
+export function getDeptByIdApi(id) {
+  return request({
+    url: '/company/department/' + id,
+  })
+}
+
+/**
+ * 根据id修改部门详情
+ * @returns Promise
+ */
+export function editDeptsApi(data) {
+  return request({
+    url: '/company/department/' + data.id,
+    method: 'PUT',
+    data,
+  })
+}

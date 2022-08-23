@@ -1,11 +1,11 @@
-import { loginApi, getUserInfoApi,getUserDetailApi } from '@/api/user'
-import {setTokenTime} from '@/utils/auth'
-import {resetRouter} from '@/router'
+import { getUserDetail, getUserInfoApi, login } from '@/api/user.js'
+import { setTokenTime } from '@/utils/auth'
+import { resetRouter } from '@/router'
 export default {
   namespaced: true,
   state: {
     token: '',
-    userInfo: ''
+    userInfo: {},
   },
   mutations: {
     setToken(state, payload) {
@@ -13,32 +13,32 @@ export default {
     },
     setUserInfo(state, payload) {
       state.userInfo = payload
-    }
+    },
   },
   actions: {
-    //获取token
-    async getToken(context, data) {
-      const res = await loginApi(data)
-      console.log(res)
+    // 登录获取token
+    async getToken(context, payload) {
+      // 发送请求得来的
+      const res = await login(payload)
       context.commit('setToken', res)
       setTokenTime()
     },
-    //获取用户信息
-    async getUserInfo(context, data) {
-      //用户信息
+    // 获取用户信息
+    async getUserInfo(context) {
       const userBaseInfo = await getUserInfoApi()
-      //员工基本信息
-      const userInfo = await getUserDetailApi(userBaseInfo.userId)
-      context.commit('setUserInfo', {...userBaseInfo,...userInfo})
+      const userInfo = await getUserDetail(userBaseInfo.userId)
+      context.commit('setUserInfo', { ...userBaseInfo, ...userInfo })
+      // 在这里通过userBaseInfo 处理动态路由
+      // actions 内部可以通过return将数据传递出去, 类似then中的return
       return userBaseInfo
     },
-    //退出
-    logout(context){
-      context.commit('setToken','')
-      context.commit('setUserInfo',{})
+    // 退出
+    logout(context) {
+      context.commit('setToken', '')
+      context.commit('setUserInfo', {})
       resetRouter()
-      //{ root: true } 是context成为全局的
+      // {root: true} context 相当于全局的context
       context.commit('permission/setRoutes', [], { root: true })
-    }
-  }
+    },
+  },
 }

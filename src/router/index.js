@@ -1,56 +1,32 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import employees from './modules/employees'
+import approvals from './modules/approvals'
+import attendances from './modules/attendances'
+import departments from './modules/departments'
+import permission from './modules/permission'
+import salarys from './modules/salarys'
+import setting from './modules/setting'
+import social from './modules/social'
+import importModule from './modules/import'
 
 Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-// 引入多个模块的规则
-import approvalsRouter from './modules/approvals'
-import departmentsRouter from './modules/departments'
-import employeesRouter from './modules/employees'
-import permissionRouter from './modules/permission'
-import attendancesRouter from './modules/attendances'
-import salarysRouter from './modules/salarys'
-import settingRouter from './modules/setting'
-import socialRouter from './modules/social'
 
-/**
- * Note: sub-menu only appear when route children.length >= 1
- * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
- *
- * hidden: true                   if set true, item will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu
- *                                if not set alwaysShow, when item has more than one children route,
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if set noRedirect will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    roles: ['admin','editor']    control the page roles (you can set multiple roles)
-    title: 'title'               the name show in sidebar and breadcrumb (recommend set)
-    icon: 'svg-name'/'el-icon-x' the icon show in the sidebar
-    breadcrumb: false            if set false, the item will hidden in breadcrumb(default is true)
-    activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
-  }
- */
-
-/**
- * constantRoutes
- * a base page that does not have permission requirements
- * all roles can be accessed
- */
-//静态路由
+// 静态路由
 export const constantRoutes = [
   {
     path: '/login',
     component: () => import('@/views/login/index'),
-    hidden: true
+    hidden: true,
   },
 
   {
     path: '/404',
     component: () => import('@/views/404'),
-    hidden: true
+    hidden: true,
   },
 
   {
@@ -62,59 +38,33 @@ export const constantRoutes = [
         path: 'dashboard',
         name: 'Dashboard',
         component: () => import('@/views/dashboard/index'),
-        meta: { title: '首页', icon: 'dashboard' }
-      }
-    ]
+        meta: { title: '首页', icon: 'dashboard' },
+      },
+    ],
   },
-  {
-    path: '/import',
-    component: Layout,
-    hidden: true, // 隐藏在左侧菜单中
-    children: [
-      {
-        path: '', // 二级路由path什么都不写 表示二级默认路由
-        component: () => import('@/views/import')
-      }
-    ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
 ]
-// 动态路由
-export const asyncRouters = [
-  approvalsRouter,
-  departmentsRouter,
-  employeesRouter,
-  permissionRouter,
-  attendancesRouter,
-  salarysRouter,
-  settingRouter,
-  socialRouter
+
+// 动态路由: 准备好项目所有动态路由, 基于后端返回的用户权限对动态路由进行筛选
+export const asyncRoutes = [
+  employees,
+  approvals,
+  departments,
+  attendances,
+  permission,
+  salarys,
+  setting,
+  social,
+  importModule,
 ]
 
 const createRouter = () =>
   new Router({
     // mode: 'history', // require service support
     scrollBehavior: () => ({ y: 0 }),
-    routes: [...constantRoutes] //路由规则
+    routes: [...constantRoutes], // 路由规则
   })
-
+// vueRouter实例
 const router = createRouter()
-
-// //路由（全局）前置守卫
-// //会在所有路由进去之前触发
-// router.beforeEach((to, from, next) => {
-//   console.log(to)
-//   //进行权限控制
-//   //调用next 进入该路由，如果没有调用则无法进入
-//   if(to.path==='/login'){
-//     next()
-//   }else{
-//     next('/login')
-//   }
-// })
-//(放到permission)
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

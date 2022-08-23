@@ -1,62 +1,47 @@
 import request from '@/utils/request'
+
 /**
- *  登陆请求
- * @param {Object} data  password mobile
+ * 登录请求
+ * @param {Object} data password mobile
  * @returns promise
  */
-export function loginApi(data) {
+export function login(data) {
   return request({
     url: '/sys/login',
     method: 'POST',
-    data
+    data,
   })
 }
-//  export const  loginApi =(data) =>
-//      request({
-//         url:'/sys/login',
-//         method: 'POST',
-//         data
-//     })
 /**
  * 获取用户信息
- * @returns
+ * @returns promise
  */
-export const getUserInfoApi = () => {
+export function getUserInfoApi() {
   return request({
     url: '/sys/profile',
-    method: 'post'
+    method: 'POST',
   })
 }
+
 /**
- * 获取员工基本信息
- * @param {*} id 
- * @returns 
+ * 根据用户id获取员工详情数据
+ * @param {String} id 用户id
+ * @returns promise
  */
-export const getUserDetailApi = (id) => {
+export function getUserDetail(id) {
   return request({
-    url: '/sys/user/' + id
+    url: '/sys/user/' + id,
   })
 }
-/**
- * 删除员工接口
- * @param {*} id 
- * @returns 
- */
- export function delEmployeeApi(id) {
-  return request({
-    url: `/sys/user/${id}`,
-    method: 'delete'
-  })
-}
-/**
- * 保存员工信息
- * @param {*} data 
- * @returns 
- */
-export function saveUserDetailByIdApi(data){
+
+/** *
+ *
+ * 保存员工的基本信息
+ * **/
+export function saveUserDetailById(data) {
   return request({
     url: `/sys/user/${data.id}`,
     method: 'put',
-    data
+    data,
   })
 }

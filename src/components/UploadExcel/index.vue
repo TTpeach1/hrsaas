@@ -1,13 +1,29 @@
 <template>
- <div class="upload-excel">
+  <div class="upload-excel">
     <div class="btn-upload">
-      <el-button :loading="loading" size="mini" type="primary" @click="handleUpload">
+      <el-button
+        :loading="loading"
+        size="mini"
+        type="primary"
+        @click="handleUpload"
+      >
         点击上传
       </el-button>
     </div>
 
-    <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
-    <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
+    <input
+      ref="excel-upload-input"
+      class="excel-upload-input"
+      type="file"
+      accept=".xlsx, .xls"
+      @change="handleClick"
+    />
+    <div
+      class="drop"
+      @drop="handleDrop"
+      @dragover="handleDragover"
+      @dragenter="handleDragover"
+    >
       <i class="el-icon-upload" />
       <span>将文件拖到此处</span>
     </div>
@@ -20,15 +36,15 @@ export default {
   name: 'UploadExcel',
   props: {
     beforeUpload: Function, // eslint-disable-line
-    onSuccess: Function // eslint-disable-line
+    onSuccess: Function, // eslint-disable-line
   },
   data() {
     return {
       loading: false,
       excelData: {
         header: null,
-        results: null
-      }
+        results: null,
+      },
     }
   },
   methods: {
@@ -118,28 +134,12 @@ export default {
     },
     isExcel(file) {
       return /\.(xlsx|xls|csv)$/.test(file.name)
-    }
-  }
+    },
+  },
 }
 </script>
 
-<style scoped lang="less">
-/* .excel-upload-input {
-  display: none;
-  z-index: -9999;
-}
-.drop {
-  border: 2px dashed #bbb;
-  width: 600px;
-  height: 160px;
-  line-height: 160px;
-  margin: 0 auto;
-  font-size: 24px;
-  border-radius: 5px;
-  text-align: center;
-  color: #bbb;
-  position: relative;
-} */
+<style scoped lang="scss">
 .upload-excel {
   display: flex;
   justify-content: center;

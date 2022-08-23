@@ -1,14 +1,14 @@
 <template>
   <div class="login-container">
-    <!-- 表单校验1.添加model属性：整个表单属性 -->
-    <!-- 表单校验2.添加rules属性：整个表单校验规则 -->
+    <!-- 表单校验 1. 添加model属性: 整个表单数据 -->
+    <!-- 表单校验 2. 添加rules属性: 整个表单校验规则 -->
     <el-form
       ref="loginForm"
       class="login-form"
       auto-complete="on"
       label-position="left"
       :model="loginForm"
-      :rules="loginRules"
+      :rules="loginFormRules"
     >
       <!-- 放置标题图片 @是设置的别名-->
       <div class="title-container">
@@ -19,130 +19,80 @@
 
       <!-- 表单区域 -->
       <el-form-item prop="mobile">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
+        <i class="el-icon-user-solid svg-container"></i>
         <el-input v-model="loginForm.mobile"></el-input>
       </el-form-item>
-
       <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
-        <el-input v-model="loginForm.password"></el-input>
-        <span class="show-pwd" @click="showPwd">
-          <svg-icon
-            :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'"
-          />
-        </span>
+        <i class="svg-container">
+          <svg-icon iconClass="password"></svg-icon>
+        </i>
+        <el-input type="password" v-model="loginForm.password"></el-input>
       </el-form-item>
-      <!-- :loading="loading" -->
+
       <el-button
-        :loading="isLogin"
-        class="loginBtn"
         type="primary"
+        class="loginBtn"
         style="width: 100%; margin-bottom: 30px"
+        :loading="isLogin"
         @click="login"
-        >登陆</el-button
+        >登录</el-button
       >
 
       <div class="tips">
-        <span style="margin-right: 20px">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right: 20px">用户名: 13800000002</span>
+        <span> 密码: 123456</span>
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
-// import { validUsername } from '@/utils/validate'
-
 export default {
   name: 'Login',
   data() {
-    // const validateUsername = (rule, value, callback) => {
-    //   if (!validUsername(value)) {
-    //     callback(new Error('Please enter the correct user name'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
-    // const validatePassword = (rule, value, callback) => {
-    //   if (value.length < 6) {
-    //     callback(new Error('The password can not be less than 6 digits'))
-    //   } else {
-    //     callback()
-    //   }
-    // }
     return {
+      // 1. 定义数据
       loginForm: {
         mobile: '13800000002',
-        password: '123456'
+        password: '123456',
       },
-      loginRules: {
+      loginFormRules: {
+        // 规则名和数据名保持一致
         mobile: [
-          {
-            required: true,
-            message: '请输入手机号',
-            trigger: 'blur'
-          },
+          { required: true, message: '请输入手机号', trigger: 'blur' },
           {
             pattern: /^(?:(?:\+|00)86)?1[3-9]\d{9}$/,
             message: '手机号码格式不正确',
-            trigger: 'blur'
-          }
+            trigger: 'blur',
+          },
         ],
         password: [
-          {
-            required: true,
-            message: '请输入密码',
-            trigger: 'blur'
-          }
+          { required: true, message: '请输入密码', trigger: 'blur' },
           // {
           //   pattern:
           //     /^(?![a-zA-Z]+$)(?![A-Z0-9]+$)(?![A-Z\W_!@#$%^&*`~()-+=]+$)(?![a-z0-9]+$)(?![a-z\W_!@#$%^&*`~()-+=]+$)(?![0-9\W_!@#$%^&*`~()-+=]+$)[a-zA-Z0-9\W_!@#$%^&*`~()-+=]/,
-          //   message: '密码格式不正确',
-          //   trigger: 'blur'
-          // }
-        ]
+          //   message: '密码请包含数字字母特殊字符,并且不能少于6位',
+          //   trigger: 'blur',
+          // },
+        ],
       },
       isLogin: false,
-      passwordType: 'password',
-      redirect: undefined
-    }
-  },
-  watch: {
-    $route: {
-      handler: function (route) {
-        this.redirect = route.query && route.query.redirect
-      },
-      immediate: true
     }
   },
   methods: {
     async login() {
+      // console.log('点击登录')
       this.isLogin = true
       try {
         await this.$refs.loginForm.validate()
-        // console.log('123');
         await this.$store.dispatch('user/getToken', this.loginForm)
         this.$router.push('/')
-        this.$message.success('登陆成功')
+        this.$message.success('登录成功')
       } finally {
         this.isLogin = false
       }
     },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-      this.$nextTick(() => {
-        this.$refs.password.focus()
-      })
-    }
-  }
+  },
 }
 </script>
 
@@ -152,7 +102,7 @@ export default {
 
 $bg: #283443;
 $light_gray: #68b0fe;
-$cursor: #fff;
+$cursor: #68b0fe;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
@@ -162,6 +112,15 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  .el-form-item__error {
+    color: #fff;
+  }
+  .loginBtn {
+    background: #407ffe;
+    height: 64px;
+    line-height: 32px;
+    font-size: 24px;
+  }
   .el-input {
     display: inline-block;
     height: 47px;
@@ -190,9 +149,6 @@ $cursor: #fff;
     border-radius: 5px;
     color: #454545;
   }
-  .el-form-item__error {
-    color: #fff;
-  }
 }
 </style>
 
@@ -204,8 +160,6 @@ $light_gray: #eee;
 .login-container {
   min-height: 100%;
   width: 100%;
-  // background-color: $bg;
-  //设置背景图片
   background-image: url('~@/assets/common/login.jpg'); // 设置背景图片
   background-position: center; // 将图片位置设置为充满整个屏幕
   overflow: hidden;
@@ -217,13 +171,6 @@ $light_gray: #eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
-  }
-
-  .loginBtn {
-    background: #407ffe;
-    height: 64px;
-    line-height: 32px;
-    font-size: 24px;
   }
 
   .tips {

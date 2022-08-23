@@ -6,16 +6,19 @@
       @toggleClick="toggleSideBar"
     />
 
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="app-breadcrumb">
-      {{ $store.state.user.userInfo.company }}
+      {{ $store.state.user.userInfo.companyName }}
       <span class="breadBtn">体验版</span>
     </div>
 
     <div class="right-menu">
+      <ToggleLang />
+      <full-screen />
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img
-            :src="$store.state.user.userInfo.staffPhoto"
+            :src="$store.state.user.userInfo.staffPhoto + '123'"
             class="user-avatar"
             v-imgError="defaultImg"
           />
@@ -42,9 +45,9 @@ import Hamburger from '@/components/Hamburger'
 import defaultImg from '@/assets/common/head.jpg'
 
 export default {
-  data(){
+  // 如果想在data中定义本地图片路径,需要先引入
+  data() {
     return {
-      // defaultImg:'https://up.tt98.com/edpic/d2/ed/f0/d2edf0d38b14181d63c68822d69773b4.jpg'
       defaultImg
     }
   },
@@ -75,21 +78,6 @@ export default {
   background-image: -webkit-linear-gradient(left, #3d6df8, #5b8cff);
   box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
 
-  .hamburger-container {
-    line-height: 46px;
-    height: 100%;
-    float: left;
-    cursor: pointer;
-    transition: background 0.3s;
-    -webkit-tap-highlight-color: transparent;
-    color: #fff;
-    fill: currentColor;
-
-    &:hover {
-      background: rgba(0, 0, 0, 0.025);
-    }
-  }
-
   .app-breadcrumb {
     display: inline-block;
     font-size: 18px;
@@ -109,10 +97,31 @@ export default {
     }
   }
 
+  .hamburger-container {
+    line-height: 46px;
+    height: 100%;
+    float: left;
+    cursor: pointer;
+    transition: background 0.3s;
+    -webkit-tap-highlight-color: transparent;
+    color: #fff;
+    fill: currentColor;
+
+    &:hover {
+      background: rgba(0, 0, 0, 0.025);
+    }
+  }
+
+  .breadcrumb-container {
+    float: left;
+  }
+
   .right-menu {
+    display: flex;
     float: right;
     height: 100%;
     line-height: 50px;
+    align-items: center;
 
     &:focus {
       outline: none;
@@ -140,10 +149,15 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
+        position: relative;
         display: flex;
         align-items: center;
-        position: relative;
         color: #fff;
+        cursor: pointer;
+
+        span {
+          margin: 0 3px;
+        }
 
         .user-avatar {
           cursor: pointer;
@@ -156,7 +170,6 @@ export default {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          // top: 25px;
           font-size: 12px;
         }
       }

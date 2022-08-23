@@ -10,9 +10,13 @@
               操作<i class="el-icon-arrow-down el-icon--right"></i>
             </span>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item @click.native="$emit('add',treeNode)">添加部门</el-dropdown-item>
+              <el-dropdown-item @click.native="$emit('add', treeNode)"
+                >添加部门</el-dropdown-item
+              >
               <template v-if="!isRoot">
-                <el-dropdown-item @click.native="$emit('edit',treeNode)">编辑部门</el-dropdown-item>
+                <el-dropdown-item @click.native="$emit('edit', treeNode)"
+                  >编辑部门</el-dropdown-item
+                >
                 <el-dropdown-item @click.native="onRemove"
                   >删除部门</el-dropdown-item
                 >
@@ -26,45 +30,41 @@
 </template>
 
 <script>
-import {delDeptsApi} from '@/api/departments'
+import { delDeptsApi } from '@/api/departments'
 export default {
+  name: 'TreeTools',
   data() {
     return {}
   },
+
   props: {
     treeNode: {
       type: Object,
-      required: true
+      required: true,
     },
     isRoot: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
+
   created() {},
 
   methods: {
     async onRemove() {
       try {
-        await this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
-          confirmButtonText: '确定',
+        await this.$confirm('此操作将永久删除该部门, 是否继续?', '提示', {
+          confirmButtonText: '删除',
           cancelButtonText: '取消',
-          type: 'warning'
+          type: 'warning',
         })
-        console.log('点击确定删除')
-        // console.log(this.treeNode.id);
-        const res = await delDeptsApi(this.treeNode.id)
-        // console.log(res,'删除部门');
+        await delDeptsApi(this.treeNode.id)
         this.$message.success('删除成功')
         this.$emit('remove')
-      } catch (error) {
-        console.log(error)
-      }
-    }
+      } catch (err) {}
+    },
   },
-
-  computed: {}
 }
 </script>
 
-<style lang="less" scoped></style>
+<style scoped lang="less"></style>
